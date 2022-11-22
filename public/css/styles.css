@@ -1,0 +1,322 @@
+* 
+{
+    box-sizing: border-box;
+}
+
+body 
+{
+    font-family: 'Roboto', sans-serif;
+    background: #E5E5E5;
+}
+
+main 
+{
+    max-width: 800px;
+    width: 90%;
+    margin: auto;
+    padding: 40px;
+}
+
+/* FORMULARIO */
+.tituloFormulario
+{
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.formulario
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:40px;
+}
+
+.formulario_label
+{
+    display:block;
+    font-weight: 700;
+    padding:10px;
+    cursor:pointer;
+}
+
+.formulario_grupo-input 
+{
+    position: relative;
+}
+
+.formulario_input
+{
+    width: 100%;
+    background-color: #fff;
+    border: 3px solid transparent;
+    border-radius: 3px;
+    height: 45px;
+    line-height: 45px;
+    padding:0 40px 0 10px;
+    transition: .3 ease all;
+}
+
+.formulario_input:focus
+{
+    border: 3px solid #397084;
+    outline: none;
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
+}
+
+.formulario_input-error 
+{
+    font-size: 12px;
+    margin-bottom: 0;
+    display: none;
+}
+
+.formulario_input-error-activo
+{
+    display:block;
+}
+
+.formulario_validacion-estado 
+{
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+    z-index: 100;
+    font-size: 17px;
+    opacity: 0;
+}
+
+.formulario_mensaje, 
+.formulario_grupo-btn-enviar 
+{
+    grid-column: span 2;
+}
+
+.formulario_mensaje 
+{
+    height: 45px;
+    line-height: 45px;
+    background-color: #F66060;
+    padding: 0 15px;
+    border-radius: 3px;
+    display:none;
+}
+
+.formulario_mensaje-activo 
+{
+    display: block;
+}
+
+.formulario_mensaje p 
+{
+   margin:0;
+}
+
+.formulario_grupo-btn-enviar 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formulario_btn 
+{
+    height: 45px;
+    line-height: 45px;
+    width: 30%;
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: .1s ease all;
+}
+
+.formulario_btn:hover 
+{
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 1);
+} 
+
+.formulario_mensaje-exito 
+{
+    font-size: 14px;
+    color: #119200;
+    display: none;
+}
+
+.formulario_mensaje-exito-activo 
+{
+    display: block;
+}
+
+.formulario_grupo-correcto
+.formulario_validacion-estado 
+{
+    color: #1ed12d;
+    opacity: 1;
+}
+
+.formulario_grupo-incorrecto
+.formulario_label 
+{
+    color: #bb2929;
+}
+
+.formulario_grupo-incorrecto
+.formulario_validacion-estado 
+{
+    color: #bb2929;
+    opacity:1;
+}
+
+.formulario_grupo-incorrecto
+.formulario_input 
+{
+   border: 3px solid #bb2929;
+}
+
+/* TABLA PARA GUARDAR LOS MANGAS */
+.tabla {
+    margin-top: 35px;
+}
+
+.camposTabla  {
+    color:black;
+    margin: 6.5px;
+    display:flex;
+    justify-content:space-between;
+} 
+
+.camposTabla div {
+    width: 25%;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* MANGAS */
+ #mangas-container {
+    gap: 5%;
+    overflow: auto;
+    height: 190px;
+}  
+
+.elementoManga {
+    padding: 5px;
+    background-color: white;
+    border-radius: 8px;
+    color:black;
+    margin-bottom: 8px;
+    display:flex;
+    justify-content:space-between; 
+}  
+
+.elementoManga div 
+{
+    padding: 4px;
+    width: 25%;
+    text-align: center;
+    margin: auto; 
+} 
+
+#checkDiv 
+{
+    opacity:0;
+}
+
+.checkManga 
+{
+    cursor: pointer;
+    margin:0 auto;
+    padding: auto;
+    width:20px;
+}
+
+/* BOTONES */
+#divButtons 
+{
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 38px;
+    width: 46px;
+    gap: 12px;
+}
+
+#buttonBorrar, #buttonOrdenar 
+{
+    font-family: 'Roboto', sans-serif;
+    background-color: black;
+    color:white;
+    border-radius: 13px;
+    cursor: pointer;
+    line-height: 25px;
+    font-weight: bold;
+    transition: .1s ease all;
+}
+
+#buttonBorrar:hover, #buttonOrdenar:hover 
+{
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 1);
+} 
+
+#buttonEditar 
+{
+    margin-left: 18px; 
+}
+
+.botonEditar 
+{
+    background-color: white;
+    border: none;
+}
+
+#botonGuardar 
+{
+    background-color: white;
+    border: none;
+}
+
+/* EDITAR */
+.inputEditar 
+{
+    width: 100%;
+}
+
+
+/* ORDENAR */
+.flechaOrdenar 
+{
+    font-size: 12px;
+}
+
+#campoNota, #campoAnyo 
+{
+    cursor:pointer;
+}
+
+/* MEDIA QUERIES */
+@media screen and (max-width:800px)
+{
+    .formulario
+    {
+        grid-template-columns: 1fr;
+    }
+    
+    .formulario_mensaje, 
+    .formulario_grupo-btn-enviar 
+    {
+        grid-column:1;
+    }
+
+    .formulario_btn 
+    {
+        width: 100%;
+    }
+
+    #divButtons 
+    {
+        padding-left: 10px;
+    }
+}

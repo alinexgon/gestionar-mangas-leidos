@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="language" content="ES">
+    <meta name="description" content="Registrar y gestionar una lista de mangas leidos">
+    <meta name="keywords" content="HTML, CSS, JavaScript, NodeJS, JSON">
+    <meta name="author" content="alinexgon">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> 
+    <title>Mangas leidos</title>
+    <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+    
+</head>
+<body>
+    <main>
+        <h1 class="tituloFormulario">Registro de Mangas</h1>
+
+        <form action="/new" method="POST" class="formulario" id="formulario">
+
+            <!-- Grupo: Nombre -->
+            <div class="formulario_grupo" id="grupo_nombre">
+                <label for="nombreManga" class="formulario_label">Titulo:</label>
+                <div class="formulario_grupo-input">
+                    <input type="text" class="formulario_input" name="nombreManga" id="nombreManga">
+                    <i class="formulario_validacion-estado fas fa-times-circle"></i>
+                </div>
+                <p class="formulario_input-error">El campo solo puede contener letras, números, espacios y acentos.</p>   
+            </div>
+
+            <!-- Grupo: Capitulos -->
+            <div class="formulario_grupo" id="grupo_capitulos">
+                <label for="capitulosManga" class="formulario_label">Capítulos:</label>
+                <div class="formulario_grupo-input">
+                    <input type="text" class="formulario_input" name="capitulosManga" id="capitulosManga">
+                    <i class="formulario_validacion-estado fas fa-times-circle"></i>
+                </div>
+                <p class="formulario_input-error">El campo solo puede contener números mayores que 0.</p>   
+            </div>
+
+            <!-- Grupo: Nota -->
+            <div class="formulario_grupo" id="grupo_nota">
+                <label for="notaManga" class="formulario_label">Nota:</label>
+                <div class="formulario_grupo-input">
+                    <input type="text" class="formulario_input" name="notaManga" id="notaManga">
+                    <i class="formulario_validacion-estado fas fa-times-circle"></i>
+                </div>
+                <p class="formulario_input-error">El campo solo puede contener números entre 0 y 5.</p>   
+            </div>
+
+            <!-- Grupo: Año -->
+            <div class="formulario_grupo" id="grupo_anyo">
+                <label for="anyoManga" class="formulario_label">Año:</label>
+                <div class="formulario_grupo-input">
+                    <input type="text" class="formulario_input" name="anyoManga" id="anyoManga">
+                    <i class="formulario_validacion-estado fas fa-times-circle"></i>
+                </div>
+                <p class="formulario_input-error">El campo solo puede contener años válidos.</p>   
+            </div>
+
+            <!-- Grupo: Idioma -->
+            <div class="formulario_grupo" id="grupo_idioma">
+                <label for="idiomaManga" class="formulario_label">Idioma:</label>
+                <div class="formulario_grupo-input">
+                    <input type="text" class="formulario_input" name="idiomaManga" id="idiomaManga">
+                    <i class="formulario_validacion-estado fas fa-times-circle"></i>
+                </div>
+                <p class="formulario_input-error">El campo solo puede contener letras (sin espacios).</p>   
+            </div>
+
+            <!-- Mensaje -->
+            <div class="formulario_mensaje" id="formulario_mensaje">
+                <p>
+                    <i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente.
+                </p>
+            </div>
+            
+            <!-- Grupo: Enviar formulario -->
+            <div class="formulario_grupo formulario_grupo-btn-enviar">
+                <input type="button" class="formulario_btn" value="Registrar Manga" id="submitManga">
+                <p class="formulario_mensaje-exito" id="formulario_mensaje-exito">
+                    Manga registrado.
+                </p>
+            </div>
+           
+        </form>
+
+        </br></br>
+
+        <!-- Tabla para listar los mangas -->
+        <div class="tabla">
+            <div class="camposTabla">
+                <div id="checkDiv">check</div>
+                <div id="campoTitulo">Título</div>
+                <div id="campoAnyo">Año <span class="flechaOrdenar">▼</span></div>
+                <div id="campoIdioma">Idioma</div>
+                <div id="campoNota">Nota <span class="flechaOrdenar">▼</span></div>
+                <div></div>
+            </div>
+            <div id="mangas-container"></div>
+            <br/>
+            <div id="divButtons">
+                <input type="button" id="buttonBorrar" value="Borrar">        
+            </div>      
+        </div>
+    </main>
+    
+    <script>
+        // Mostrar mangas
+        loadMangas();
+
+        // Mangas seleccionados
+        var numCheck = 0;
+        var check = "check";
+        var mangasChecked = [];
+
+        // Botones
+        const btn_borrar = document.getElementById("buttonBorrar");
+
+        // Expresiones regulares
+        const expresiones = 
+        {
+            titulo: /^[a-zA-ZÀ-ÿ\s0-9]{1,40}$/, // Letras, numeros, espacios, acentos.
+            idioma: /^[a-zA-ZÀ-ÿ]{2,10}$/, // letras, con acentos, y sin espacios.
+            capitulos: /^[1-9][0-9]*$/, // Numeros mayores que 0.
+            nota: /^[0-4].5$|^[0-5]{1}$/, // Numeros del 0 al 5 (y con 0.5 de diferencia).
+            anyo: /^20[\d]{2}$/ // Años validos (a partir del 2000).
+        }
+
+        // Campos de objeto manga
+        const campos = {
+            nombre: false,
+            capitulos: false,
+            nota: false,
+            anyo: false,
+            idioma: false
+        }
+
+        const nombreCampos = ['nombre','capitulos','nota','anyo','idioma'];
+
+        // Formulario
+        const submitManga = document.querySelector('#submitManga');
+        const formulario = document.getElementById('formulario');
+        const inputs = document.querySelectorAll('#formulario input');
+
+
+        const validarFormulario = (e) => 
+        {
+           switch(e.target.name) 
+           {
+                case "nombreManga":
+                    validarCampo(expresiones.titulo,e.target,'nombre');
+                break;
+                case "capitulosManga":
+                    validarCampo(expresiones.capitulos,e.target,'capitulos');
+                break;
+                case "notaManga":
+                    validarCampo(expresiones.nota,e.target,'nota');
+                break;
+                case "anyoManga":
+                    validarCampo(expresiones.anyo,e.target,'anyo');
+                break;
+                case "idiomaManga":
+                    validarCampo(expresiones.idioma,e.target,'idioma');
+                break;
+           }
+        }
+
+        const validarCampo = (expresion, input, campo) => 
+        {
+            //input correcto
+            if(expresion.test(input.value)) 
+            {
+                document.getElementById(`grupo_${campo}`).classList.remove('formulario_grupo-incorrecto');
+                document.getElementById(`grupo_${campo}`).classList.add('formulario_grupo-correcto');
+                document.querySelector(`#grupo_${campo} i`).classList.remove('fa-times-circle');
+                document.querySelector(`#grupo_${campo} i`).classList.add('fa-check-circle');
+                document.querySelector(`#grupo_${campo} .formulario_input-error`).classList.remove('formulario_input-error-activo');
+                campos[campo] = true;
+            } 
+            else //input incorrecto
+            { 
+                document.getElementById(`grupo_${campo}`).classList.remove('formulario_grupo-correcto');
+                document.getElementById(`grupo_${campo}`).classList.add('formulario_grupo-incorrecto');
+                document.querySelector(`#grupo_${campo} i`).classList.remove('fa-check-circle');
+                document.querySelector(`#grupo_${campo} i`).classList.add('fa-times-circle');
+                document.querySelector(`#grupo_${campo} .formulario_input-error`).classList.add('formulario_input-error-activo');
+                campos[campo] = false;
+            }
+        }
+
+        const resetearCampos = (campo) =>
+        {
+            document.getElementById(`grupo_${campo}`).classList.remove('formulario_grupo-correcto');
+            document.querySelector(`#grupo_${campo} i`).classList.remove('fa-check-circle');
+        }
+
+        inputs.forEach((input) => {
+            input.addEventListener('keyup', validarFormulario);
+            input.addEventListener('blur', validarFormulario);
+        });
+
+        /* REGISTRAR MANGA */
+        submitManga.addEventListener('click', () => 
+        {      
+            //Obtiene los valores de los campos (necesario para escribir en el JSON)
+            const titulo = document.querySelector('#nombreManga').value;
+            const capitulos= document.querySelector('#capitulosManga').value;
+            const nota= document.querySelector('#notaManga').value;
+            const anyo = document.querySelector('#anyoManga').value;
+            const idioma = document.querySelector('#idiomaManga').value;
+
+            // Si todos los campos son correctos
+            if(campos.nombre && campos.capitulos && campos.nota && campos.anyo && campos.idioma)
+            {        
+                //manda solicitud POST a /new
+                fetch('/new', 
+                {
+                    method: 'POST', 
+                    headers: 
+                    {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({nombreManga: titulo, capitulosManga: capitulos, notaManga: nota, anyoManga: anyo, idiomaManga: idioma})  
+                })
+                .then(res => res.text())
+                .then(data => 
+                {
+                    //actualizar la lista de mangas
+                    loadMangas();
+                    //resetea los datos del formulario
+                    formulario.reset();
+                    //resetea los campos
+                    nombreCampos.forEach(campo => 
+                    {
+                        resetearCampos(campo);
+                    })
+                    //inicializa los valores
+                    numCheck= 0;
+                    mangasChecked= [];   
+                })   
+
+            }
+            else 
+            {
+                alert("Debes rellenar todos los campos.");
+            }
+
+        });
+
+        /* ELIMINAR MANGAS SELECCIONADOS */
+        buttonBorrar.addEventListener('click', () => 
+        {
+            // averiguar que mangas hay seleccionados
+            for(i=0; i<numCheck; i++)
+            {
+                var checkManga = document.getElementById(check+i.toString());
+
+                if(checkManga.checked)
+                {
+                    //i -> posicion que ocupa el manga en la lista
+                    mangasChecked.push(i);
+                }        
+            }
+
+            // si hay mangas a eliminar
+            if(mangasChecked.length != 0)
+            {
+                //manda solicitud POST a /remove
+                fetch('/remove', 
+                {
+                    method: 'POST', 
+                    headers: 
+                    {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({check:mangasChecked})  
+                })
+                .then(res => res.text())
+                .then(data => 
+                {
+                    //inicializar valores
+                    numCheck= 0;
+                    mangasChecked= [];
+                    // cargar lista de mangas
+                    loadMangas();         
+                })  
+            }
+            else
+            {
+                alert("No hay mangas seleccionados para borrar.");
+            }
+            
+        })
+
+        /* CARGAR MANGAS */
+        function loadMangas()
+        {
+            //manda solicitud GET a /get-mangas
+            fetch('/get-mangas', {method: 'GET'})
+            .then(res => res.json())
+            .then(data => 
+            {
+                const mangas = document.querySelector('#mangas-container');
+                let html = '';
+                // mapea cada uno de los elementos del JSON (manga)
+                data.mangas.forEach(manga => 
+                {
+                    html += `
+                        <div class="elementoManga">
+                            <div class="elementoCheck"><input type ="checkbox" id="${check+numCheck.toString()}" class="checkManga" name="checkManga"/></div>
+                            <div class="elementoTitulo" id="${"titulo"+numCheck.toString()}">${manga.titulo}</span></div> 
+                            <div class="elementoAnyo">${manga.anyo}</div>
+                            <div class="elementoIdioma">${manga.idioma}</div>
+                            <div class="elementoNota">${manga.nota} <img src="img/estrella.png" width="14"/></div>
+                            <div class="elementoEditar"><button class="botonEditar" onclick="editarManga(${numCheck});">✏️</button></div>
+                        </div>`;
+                    numCheck++;
+                });
+
+                mangas.innerHTML = html;            
+            });
+        }
+
+        /* MODIFICAR UN MANGA */
+        function editarManga(id)
+        {
+            //inicializar valores
+            btn_borrar.style.opacity=0;
+            numCheck= 0;
+            mangasChecked= [];
+            //modificar manga
+            editMangas(id);
+        }
+
+        function editMangas(id)
+        {
+            fetch('/get-mangas', {method: 'GET'})
+            .then(res => res.json())
+            .then(data => {
+                    const mangas = document.querySelector('#mangas-container');
+                    let html = '';
+                    // modifica el campo del manga a modificar (a tipo input)
+                    data.mangas.forEach(manga => 
+                    {
+                        /* Si es el manga a modificar */
+                        if(numCheck == id)
+                        {
+                            html += `
+                                <div class="elementoManga">
+                                    <div class="elementoCheck"><input type ="checkbox" id="${check+numCheck.toString()}" style="opacity:0;" class="checkManga" name="checkManga"/></div>
+                                    <div class="elementoTitulo" id="${"titulo"+numCheck.toString()}">
+                                        <input type="text" class="inputEditar" value="${manga.titulo}" id="modTitulo" name="modTitulo"/>
+                                    </div> 
+                                    <div class="elementoAnyo">
+                                        <input type="text" class="inputEditar" value="${manga.anyo}" id="modAnyo" name="modAnyo"/>
+                                    </div>
+                                    <div class="elementoIdioma">
+                                        <input type="text" class="inputEditar"value="${manga.idioma}" id="modIdioma" name="modIdioma"/>
+                                    </div>
+                                    <div class="elementoNota"> 
+                                        <input type="text" class="inputEditar" value="${manga.nota}" id="modNota" name="modNota"/>
+                                    </div>
+                                    <div class="elementoEditar">
+                                        <button id="botonGuardar" onclick="guardarManga(${numCheck});">💾</button>
+                                    </div>
+                                </div>`;
+                            numCheck++;
+                        } /* Cualquier otro */
+                        else
+                        {
+                            html += `
+                                <div class="elementoManga">
+                                    <div class="elementoCheck"><input type ="checkbox" style="opacity:0;"id="${check+numCheck.toString()}" class="checkManga" name="checkManga"/></div>
+                                    <div class="elementoTitulo" id="${"titulo"+numCheck.toString()}">${manga.titulo}</span></div> 
+                                    <div class="elementoAnyo">${manga.anyo}</div>
+                                    <div class="elementoIdioma">${manga.idioma}</div>
+                                    <div class="elementoNota">${manga.nota} <img src="img/estrella.png" width="14"/></div>
+                                    <div class="elementoEditar"><button style="opacity:0; class="botonEditar" onclick="editarManga(${numCheck});">✏️</button></div>
+                                </div>`;
+                            numCheck++;
+                        }
+                    });
+
+                mangas.innerHTML = html;            
+
+            });
+        }
+
+        /* GUARDAR INFORMACION MODIFICADA DE UN MANGA */
+        function guardarManga(id)
+        {
+            //inicializar valores
+            numCheck= 0;
+            mangasChecked= [];
+            //Guardar la informacion 
+            saveManga(id);
+        }
+
+        function saveManga(id) 
+        {              
+            //obtener los valores de los campos (necesario para escribir en el JSON)
+            const titulo = document.getElementById("modTitulo").value;
+            const nota= document.getElementById("modNota").value;
+            const anyo = document.getElementById("modAnyo").value;
+            const idioma = document.getElementById("modIdioma").value;
+    
+            // Si todos los campos son correctos
+            if(titulo != '')
+            {       
+                //mandar solicitud POST a /new
+                fetch('/update', 
+                {
+                    method: 'POST', 
+                    headers: 
+                    {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },      
+                    body: JSON.stringify({nombreManga: titulo, /*capitulosManga: capitulos,*/ notaManga: nota, anyoManga: anyo, idiomaManga: idioma})  
+                })
+                .then(res => res.text())
+                .then(data => 
+                {
+                    //inicializar valores
+                    numCheck= 0;
+                    mangasChecked= []; 
+                    //actualizar la lista de mangas
+                    loadMangas();
+                    btn_borrar.style.opacity=1;
+                })   
+
+            }
+            else 
+            {
+                alert("Los campos no pueden estar en blanco.");
+            }
+    
+        }
+
+        /* ORDENAR LISTA */
+        function ordenarLista(key)
+        {
+            fetch('/sort', 
+            {
+                method: 'POST', 
+                headers: 
+                {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({key: key})  
+            })
+            .then(res => res.text())
+            .then(data => {
+                //inicializar valores
+                numCheck= 0;
+                mangasChecked= [];
+                // cargar lista de mangas
+                loadMangas();         
+            })  
+        }
+
+        campoNota.addEventListener('click', () => 
+        {
+            ordenarLista('nota');
+        })
+
+        campoAnyo.addEventListener('click', () => {
+            ordenarLista('anyo');
+        })
+    </script>
+
+
+</body>
+</html>

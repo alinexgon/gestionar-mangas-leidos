@@ -1,0 +1,34 @@
+{
+  "mangas": [
+    {
+      "titulo": "Tokyo Aliens ",
+      "capitulos": 3,
+      "nota": 10,
+      "anyo": "2022",
+      "idioma": "francés",
+      "vocabulario": [
+        {}
+      ]
+    },
+    {
+      "titulo": "The God and the Flightless Messenger",
+      "capitulos": 6,
+      "nota": 8,
+      "anyo": 2022,
+      "idioma": "inglés",
+      "vocabulario": [
+        {}
+      ]
+    },
+    {
+      "titulo": "Two Lions",
+      "capitulos": 7,
+      "nota": 10,
+      "anyo": 2021,
+      "idioma": "francés",
+      "vocabulario": [
+        {}
+      ]
+    }
+  ]
+}
